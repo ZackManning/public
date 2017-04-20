@@ -1,0 +1,56 @@
+<md-content class="md-padding" ng-show="$ctrl.selected">
+
+  <h2>User Details</h2>
+
+  <form name="userForm">
+
+    <div layout-gt-sm="row">
+      <md-list-item>
+        <img ng-src="https://avatars.githubusercontent.com/{{$ctrl.selected.githubHandle}}" class="md-avatar input-avatar" />
+
+        <md-input-container class="md-block" flex=40>
+          <label>GitHub Handle</label>
+          <input ng-model="$ctrl.selected.githubHandle" disabled>
+        </md-input-container>
+      </md-list-item>
+      <md-list-item>
+        <md-input-container class="md-block" flex=60>
+          <label>Name</label>
+          <input ng-model="$ctrl.selected.name" ng-change="$ctrl.onUserInfoChanged()">
+        </md-input-container>
+      </md-list-item>
+    </div>
+    <div layout-gt-sm="row">
+      <md-list-item>
+        <md-input-container class="md-block" flex>
+          <label>Address</label>
+          <input ng-model="$ctrl.selected.address" ng-change="$ctrl.onUserInfoChanged()">
+        </md-input-container>
+      </md-list-item>
+    </div>
+    <div layout-gt-sm="row">
+      <md-list-item>
+        <md-input-container class="md-block" flex=60>
+          <label>City</label>
+          <input ng-model="$ctrl.selected.city" ng-change="$ctrl.onUserInfoChanged()">
+        </md-input-container>
+        <md-input-container class="md-block" flex=15>
+          <label>State</label>
+          <input ng-model="$ctrl.selected.state" ng-change="$ctrl.onUserInfoChanged()">
+        </md-input-container>
+        <md-input-container class="md-block" flex=25>
+          <label>Zip</label>
+          <input ng-model="$ctrl.selected.zip" ng-change="$ctrl.onUserInfoChanged()">
+        </md-input-container>
+      </md-list-item>
+    </div>
+
+    <div ng-show="$ctrl.selected.changed">
+      <md-button class="md-raised md-primary">
+        Save
+      </md-button>
+    </div>
+
+  </form>
+
+</md-content>

@@ -1,0 +1,49 @@
+[ng-cloak] {
+  display: none;
+}
+
+html, body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+
+/* Toolbar area */
+
+.menu {
+  background-color: transparent;
+  border: none;
+  height: 38px;
+  margin: 16px;
+  width: 36px;
+}
+
+/* Sidenav area */
+
+md-list .selected {
+  color: rgb(0,150,136);
+}
+
+md-sidenav md-list {
+  padding: 0px 0px 8px 0px;
+}
+
+/* Primary content area */
+
+#content {
+  padding-left: 40px;
+  padding-right: 40px;
+  padding-top: 5px;
+}
+
+md-button.menuBtn > md-icon {
+  fill: white;
+  width: 24px;
+  height: 24px;
+}
+
+md-list-item img.input-avatar {
+  margin-bottom: 40px;
+}
