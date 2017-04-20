@@ -30,12 +30,19 @@ function UsersDataService($q) {
     }
   ];
 
-  // Promise-based API
+  function loadAllUsers() {
+    return $q.when(users);
+  }
+
+  function saveUser(user) {
+    return $q(function (resolve, reject) {
+      resolve(user);
+    });
+  }
+
   return {
-    loadAllUsers: function() {
-      // Simulate async nature of real remote calls
-      return $q.when(users);
-    }
+    loadAllUsers: loadAllUsers,
+    saveUser: saveUser
   };
 }
 

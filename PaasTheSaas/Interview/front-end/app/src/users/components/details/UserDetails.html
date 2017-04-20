@@ -10,13 +10,13 @@
 
         <md-input-container class="md-block" flex=40>
           <label>GitHub Handle</label>
-          <input ng-model="$ctrl.selected.githubHandle" disabled>
+          <input ng-model="$ctrl.currentUser.githubHandle" disabled>
         </md-input-container>
       </md-list-item>
       <md-list-item>
         <md-input-container class="md-block" flex=60>
           <label>Name</label>
-          <input ng-model="$ctrl.selected.name" ng-change="$ctrl.onUserInfoChanged()">
+          <input ng-model="$ctrl.currentUser.name" ng-change="$ctrl.onUserInfoChanged()">
         </md-input-container>
       </md-list-item>
     </div>
@@ -24,7 +24,7 @@
       <md-list-item>
         <md-input-container class="md-block" flex>
           <label>Address</label>
-          <input ng-model="$ctrl.selected.address" ng-change="$ctrl.onUserInfoChanged()">
+          <input ng-model="$ctrl.currentUser.address" ng-change="$ctrl.onUserInfoChanged()">
         </md-input-container>
       </md-list-item>
     </div>
@@ -32,22 +32,25 @@
       <md-list-item>
         <md-input-container class="md-block" flex=60>
           <label>City</label>
-          <input ng-model="$ctrl.selected.city" ng-change="$ctrl.onUserInfoChanged()">
+          <input ng-model="$ctrl.currentUser.city" ng-change="$ctrl.onUserInfoChanged()">
         </md-input-container>
         <md-input-container class="md-block" flex=15>
           <label>State</label>
-          <input ng-model="$ctrl.selected.state" ng-change="$ctrl.onUserInfoChanged()">
+          <input ng-model="$ctrl.currentUser.state" ng-change="$ctrl.onUserInfoChanged()">
         </md-input-container>
         <md-input-container class="md-block" flex=25>
           <label>Zip</label>
-          <input ng-model="$ctrl.selected.zip" ng-change="$ctrl.onUserInfoChanged()">
+          <input ng-model="$ctrl.currentUser.zip" ng-change="$ctrl.onUserInfoChanged()">
         </md-input-container>
       </md-list-item>
     </div>
 
-    <div ng-show="$ctrl.selected.changed">
-      <md-button class="md-raised md-primary">
+    <div ng-show="$ctrl.selected.pendingChanges">
+      <md-button class="md-raised md-primary" ng-click="$ctrl.save()">
         Save
+      </md-button>
+      <md-button class="md-raised" ng-click="$ctrl.undoChanges()">
+        Undo Changes
       </md-button>
     </div>
 

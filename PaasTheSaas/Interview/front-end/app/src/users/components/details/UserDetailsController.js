@@ -5,19 +5,33 @@ class UserDetailsController {
    *
    * @param $log
    */
-  constructor($log, $scope) {
+  constructor($log, $scope, UsersDataService) {
     this.$log = $log;
-    this.changed = false;
+    this.UsersDataService = UsersDataService;
+    this.currentUser = angular.copy(this.selected);
 
-    // $scope.$watch(() => this.selected, function (newValue, oldValue) {
-    //   $scope.$ctrl.changed = false;
-    // });
+    $scope.$watch(() => this.selected, function (newValue, oldValue) {
+      $scope.$ctrl.currentUser = angular.copy(newValue);
+    });
   }
 
   onUserInfoChanged() {
-    this.selected.changed = true;
+    this.selected.pendingChanges = true;
+  }
+
+  save() {
+    var self = this;
+    self.UsersDataService.saveUser(self.currentUser)
+      .then(function(user) {
+        angular.copy(self.currentUser, self.selected);
+        console.log(self.selected);
+      })
+  }
+
+  undoChanges() {
+    this.selected.pendingChanges = false;
+    angular.copy(this.selected, this.currentUser);
   }
 
 }
 export default UserDetailsController;
-

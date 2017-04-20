@@ -8,7 +8,6 @@ function AppController(UsersDataService, $mdSidenav, $scope, $mdDialog) {
   var self = this;
 
   self.selected = null;
-  self.previousSelected = null;
   self.users = [];
   self.selectUser = selectUser;
   self.toggleList = toggleUsersList;
@@ -35,7 +34,6 @@ function AppController(UsersDataService, $mdSidenav, $scope, $mdDialog) {
 
   function setSelectedUser(user) {
     self.selected = user;
-    self.previousSelected = angular.copy(user);
   }
 
   /**
@@ -49,7 +47,7 @@ function AppController(UsersDataService, $mdSidenav, $scope, $mdDialog) {
 
     user = angular.isNumber(user) ? $scope.users[user] : user;
 
-    if (self.selected.changed) {
+    if (self.selected.pendingChanges) {
       var confirm = $mdDialog.confirm()
         .title(`User "${self.selected.name}" has changed`)
         .textContent('Are you sure you want to switch to another user?')
@@ -57,9 +55,7 @@ function AppController(UsersDataService, $mdSidenav, $scope, $mdDialog) {
         .ok('Discard changes')
         .cancel('Go back');
       $mdDialog.show(confirm).then(function () {
-        if (self.previousSelected) {
-          angular.copy(self.previousSelected, self.selected);
-        }
+        self.selected.pendingChanges = false;
         setSelectedUser(user);
       }, function () {
         // Do nothing
