@@ -19,7 +19,7 @@ namespace WebApi.Tests.Controllers
         public async Task GetUsers_NullList_ReturnsNotFound()
         {
             //Arrange
-            var serviceStub = new Mock<IDataStore>();
+            var serviceStub = new Mock<IUserDataStore>();
             IEnumerable<User> mockedUsers = null;
             serviceStub.Setup(
                 users => users.Get<User>()
@@ -38,7 +38,7 @@ namespace WebApi.Tests.Controllers
         public async Task GetUsers_EmptyList_ReturnsNotFound()
         {
             //Arrange
-            var serviceStub = new Mock<IDataStore>();
+            var serviceStub = new Mock<IUserDataStore>();
             serviceStub.Setup(
                 users => users.Get<User>()
             ).ReturnsAsync(new List<User>());
@@ -56,7 +56,7 @@ namespace WebApi.Tests.Controllers
         public async Task GetUsers_UserList_ReturnsAllUsers()
         {
             //Arrange
-            var serviceStub = new Mock<IDataStore>();
+            var serviceStub = new Mock<IUserDataStore>();
             serviceStub.Setup(
                 users => users.Get<User>()
             ).ReturnsAsync(UserData.GetUsers());
@@ -78,7 +78,7 @@ namespace WebApi.Tests.Controllers
             //Arrange
             string emptyId = " ";
             User user = null;
-            var serviceStub = new Mock<IDataStore>();
+            var serviceStub = new Mock<IUserDataStore>();
             serviceStub.Setup(
                 users => users.Get<User>(emptyId)
             ).ReturnsAsync(user);
@@ -97,7 +97,7 @@ namespace WebApi.Tests.Controllers
         {
             //Arrange
             User user = null;
-            var serviceStub = new Mock<IDataStore>();
+            var serviceStub = new Mock<IUserDataStore>();
             serviceStub.Setup(
                 users => users.Get<User>(UserData.UnknownUserId)
             ).ReturnsAsync(user);
@@ -115,7 +115,7 @@ namespace WebApi.Tests.Controllers
         public async Task GetUser_KnownId_ReturnsUser()
         {
             //Arrange
-            var serviceStub = new Mock<IDataStore>();
+            var serviceStub = new Mock<IUserDataStore>();
             serviceStub.Setup(
                 users => users.Get<User>(UserData.KnownUserId)
             ).ReturnsAsync(UserData.GetKnownUser());
@@ -137,7 +137,7 @@ namespace WebApi.Tests.Controllers
             //Arrange
             string emptyId = null;
             User user = null;
-            var serviceStub = new Mock<IDataStore>();
+            var serviceStub = new Mock<IUserDataStore>();
             serviceStub.Setup(
                 users => users.Insert(user)
             ).ReturnsAsync(emptyId);
@@ -156,7 +156,7 @@ namespace WebApi.Tests.Controllers
         {
             //Arrange
             User user = UserData.GetKnownUser();
-            var serviceStub = new Mock<IDataStore>();
+            var serviceStub = new Mock<IUserDataStore>();
             serviceStub.Setup(
                 users => users.Insert(user)
             ).ReturnsAsync(UserData.KnownUserId);
@@ -178,7 +178,7 @@ namespace WebApi.Tests.Controllers
             //Arrange
             string emptyId = null;
             User user = null;
-            var serviceStub = new Mock<IDataStore>();
+            var serviceStub = new Mock<IUserDataStore>();
             var contoller = new UsersController(serviceStub.Object);
 
             //Act
@@ -193,7 +193,7 @@ namespace WebApi.Tests.Controllers
         {
             //Arrange
             User user = null;
-            var serviceStub = new Mock<IDataStore>();
+            var serviceStub = new Mock<IUserDataStore>();
             var contoller = new UsersController(serviceStub.Object);
 
             //Act
@@ -208,7 +208,7 @@ namespace WebApi.Tests.Controllers
         {
             //Arrange
             User user = UserData.GetKnownUser();
-            var serviceStub = new Mock<IDataStore>();
+            var serviceStub = new Mock<IUserDataStore>();
             var contoller = new UsersController(serviceStub.Object);
 
             //Act
@@ -223,7 +223,7 @@ namespace WebApi.Tests.Controllers
         {
             //Arrange
             User user = null;
-            var serviceStub = new Mock<IDataStore>();
+            var serviceStub = new Mock<IUserDataStore>();
             serviceStub.Setup(
                 users => users.Get<User>(UserData.UnknownUserId)
             ).ReturnsAsync(user);
@@ -242,7 +242,7 @@ namespace WebApi.Tests.Controllers
         {
             //Arrange
             User user = UserData.GetKnownUser();
-            var serviceStub = new Mock<IDataStore>();
+            var serviceStub = new Mock<IUserDataStore>();
             serviceStub.Setup(
                 users => users.Get<User>(UserData.KnownUserId)
             ).ReturnsAsync(user);
@@ -263,7 +263,7 @@ namespace WebApi.Tests.Controllers
         {
             //Arrange
             string emptyId = null;
-            var serviceStub = new Mock<IDataStore>();
+            var serviceStub = new Mock<IUserDataStore>();
             var contoller = new UsersController(serviceStub.Object);
 
             //Act
@@ -278,7 +278,7 @@ namespace WebApi.Tests.Controllers
         {
             //Arrange
             User user = UserData.GetKnownUser();
-            var serviceStub = new Mock<IDataStore>();
+            var serviceStub = new Mock<IUserDataStore>();
             serviceStub.Setup(
                 users => users.Get<User>(UserData.KnownUserId)
             ).ReturnsAsync(user);
@@ -297,7 +297,7 @@ namespace WebApi.Tests.Controllers
         {
             //Arrange
             User user = null;
-            var serviceStub = new Mock<IDataStore>();
+            var serviceStub = new Mock<IUserDataStore>();
             serviceStub.Setup(
                 users => users.Get<User>(UserData.UnknownUserId)
             ).ReturnsAsync(user);

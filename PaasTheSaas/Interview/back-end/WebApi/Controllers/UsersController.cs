@@ -14,13 +14,13 @@ namespace WebApi.Controllers
     [Route("api/[controller]")]
     public class UsersController : Controller
     {
-        private IDataStore UsersDataStore;
+        private IUserDataStore UsersDataStore;
 
         /// <summary>
         /// Construct Controller
         /// </summary>
         /// <param name="dataStore">Injected Data Store</param>
-        public UsersController(IDataStore dataStore)
+        public UsersController(IUserDataStore dataStore)
         {
             UsersDataStore = dataStore;
         }
@@ -37,11 +37,15 @@ namespace WebApi.Controllers
         [ProducesResponseType(typeof(BadRequestResult), (int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> Get()
         {
-            // Implement
-
-            // Remove below when implemented
-            await Task.Delay(1);
-            return new StatusCodeResult((int)HttpStatusCode.MethodNotAllowed);
+            var users = await UsersDataStore.Get<User>();
+            if (users == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(users);
+            }
         }
 
         /// <summary>
@@ -63,11 +67,21 @@ namespace WebApi.Controllers
         [ProducesResponseType(typeof(NotFoundResult), (int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> Get([FromRoute] string id)
         {
-            // Implement
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest("Invalid user ID");
+            }
 
-            // Remove below when implemented
-            await Task.Delay(1);
-            return new StatusCodeResult((int)HttpStatusCode.MethodNotAllowed);
+            //var user = await UsersDataStore.Get<Microsoft.Azure.Documents.Document>(id);
+            var user = await UsersDataStore.Get<User>(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(user);
+            }
         }
         #endregion GET
 
@@ -117,7 +131,7 @@ namespace WebApi.Controllers
         [ProducesResponseType(typeof(NoContentResult), (int)HttpStatusCode.NoContent)]
         [ProducesResponseType(typeof(BadRequestResult), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(NotFoundResult), (int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> Put([FromRoute] string id, [FromBody]User user)
+        public async Task<IActionResult> Put([FromRoute] string id, [FromBody] User user)
         {
             // Implement
 

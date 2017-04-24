@@ -37,7 +37,7 @@ namespace WebApi
                     {
                         Version = "v1",
                         Title = "Users Web API",
-                        Description = "A user ASP.NET Core Web API",
+                        Description = "API to load user information",
                         TermsOfService = "None"
                     });
 
@@ -47,10 +47,12 @@ namespace WebApi
             );
 
             // Register a transient service for DI
-            services.AddTransient<IDataStore>(
+            services.AddTransient<IUserDataStore>(
                 userProvider =>
                 {
-                    return new YourDataStore();
+                    var dbSection = Configuration.GetSection("Database");
+                    return new UserDocumentStore(dbSection.GetValue<string>("endpoint"), dbSection.GetValue<string>("authKey"),
+                        dbSection.GetValue<string>("ID"), dbSection.GetValue<string>("Collection"));
                 }
             );
         }
