@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
+using System.Linq.Expressions;
 
 namespace WebApi.Store
 {
@@ -52,16 +53,23 @@ namespace WebApi.Store
         public async Task<T> Get<T>(string id)
         {
             var response = await client.ReadDocumentAsync(UriFactory.CreateDocumentUri(databaseID, collectionID, id));
-            return (T)(dynamic)response.Resource;
+            if (response == null)
+            {
+                return default(T);
+            }
+            else
+            {
+                return (T)(dynamic)response;
+            }
         }
 
-        public async Task<T> Insert<T>(T document)
+        public async Task<string> Insert<T>(T document)
         {
             var response = await client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(databaseID, collectionID), document);
-            return (T)(dynamic)response;
+            return (response as dynamic).id;
         }
 
-        public async Task<IEnumerable<T>> Query<T>(Func<T, bool> predicate)
+        public async Task<IEnumerable<T>> Query<T>(Expression<Func<T, bool>> predicate)
         {
             IDocumentQuery<T> query = client.CreateDocumentQuery<T>(
                 UriFactory.CreateDocumentCollectionUri(databaseID, collectionID),

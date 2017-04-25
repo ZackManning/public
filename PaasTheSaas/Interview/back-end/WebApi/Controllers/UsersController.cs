@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebApi.Store;
 using WebApi.Models;
 using System.Net;
+using System.Linq;
 
 namespace WebApi.Controllers
 {
@@ -38,7 +39,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> Get()
         {
             var users = await UsersDataStore.Get<User>();
-            if (users == null)
+            if (users == null || users.Count() == 0)
             {
                 return NotFound();
             }
@@ -61,7 +62,7 @@ namespace WebApi.Controllers
         /// <response code="200">Returns the user</response>
         /// <response code="400">If there is no id</response>
         /// <response code="404">No Content</response>
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetUser")]
         [ProducesResponseType(typeof(User), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadRequestResult), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(NotFoundResult), (int)HttpStatusCode.NotFound)]
@@ -69,10 +70,9 @@ namespace WebApi.Controllers
         {
             if (string.IsNullOrWhiteSpace(id))
             {
-                return BadRequest("Invalid user ID");
+                return BadRequest();
             }
-
-            //var user = await UsersDataStore.Get<Microsoft.Azure.Documents.Document>(id);
+            
             var user = await UsersDataStore.Get<User>(id);
             if (user == null)
             {
@@ -108,13 +108,16 @@ namespace WebApi.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(User), (int)HttpStatusCode.Created)]
         [ProducesResponseType(typeof(BadRequestResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Post([FromBody]User user)
+        public async Task<IActionResult> Post([FromBody] User user)
         {
-            // Implement
+            if (user == null)
+            {
+                return BadRequest();
+            }
 
-            // Remove below when implemented
-            await Task.Delay(1);
-            return new StatusCodeResult((int)HttpStatusCode.MethodNotAllowed);
+            var newUserID = await UsersDataStore.Insert(user);
+
+            return CreatedAtRoute("GetUser", new { id = newUserID }, user);
         }
         #endregion POST
 
@@ -133,12 +136,21 @@ namespace WebApi.Controllers
         [ProducesResponseType(typeof(NotFoundResult), (int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> Put([FromRoute] string id, [FromBody] User user)
         {
-            // Implement
+            if (InvalidUpdateModelState(id, user))
+            {
+                return BadRequest();
+            }
 
-            // Remove below when implemented
-            await Task.Delay(1);
-            return new StatusCodeResult((int)HttpStatusCode.MethodNotAllowed);
+            if (await UsersDataStore.Get<User>(id) == null)
+            {
+                return NotFound();
+            }
+
+            await UsersDataStore.Update(id, user);
+
+            return NoContent();
         }
+        #endregion PUT
 
         #region Utilities
         private bool InvalidUpdateModelState(string id, User user)
@@ -146,7 +158,7 @@ namespace WebApi.Controllers
             return string.IsNullOrWhiteSpace(id) || user == null || user.Id != id;
         }
         #endregion Utilities
-        #endregion PUT
+
 
         #region DELETE
         /// <summary>
@@ -162,11 +174,19 @@ namespace WebApi.Controllers
         [ProducesResponseType(typeof(NotFoundResult), (int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> Delete([FromRoute] string id)
         {
-            // Implement
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest();
+            }
 
-            // Remove below when implemented
-            await Task.Delay(1);
-            return new StatusCodeResult((int)HttpStatusCode.MethodNotAllowed);
+            if (await UsersDataStore.Get<User>(id) == null)
+            {
+                return NotFound();
+            }
+
+            await UsersDataStore.Delete(id);
+
+            return NoContent();
         }
         #endregion DELETE
     }

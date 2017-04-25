@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace WebApi.Store
@@ -10,8 +11,8 @@ namespace WebApi.Store
         Task Delete(string id);
         Task<IEnumerable<T>> Get<T>();
         Task<T> Get<T>(string id);
-        Task<T> Insert<T>(T document);
-        Task<IEnumerable<T>> Query<T>(Func<T, bool> predicate);
+        Task<string> Insert<T>(T document);
+        Task<IEnumerable<T>> Query<T>(Expression<Func<T, bool>> predicate);
         Task Update<T>(string id, T document);
     }
 }
