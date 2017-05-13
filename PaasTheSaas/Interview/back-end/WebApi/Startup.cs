@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using WebApi.Store;
 using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.AspNetCore.Mvc.Cors.Internal;
 
 namespace WebApi
 {
@@ -27,6 +28,14 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", builder =>
+                {
+                    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                });
+            });
+
             // Add framework services.
             services.AddMvc();
 
@@ -69,6 +78,8 @@ namespace WebApi
             }
 
             app.UseStaticFiles();
+
+            app.UseCors("AllowAll");
 
             app.UseMvc();
             app.UseSwagger();

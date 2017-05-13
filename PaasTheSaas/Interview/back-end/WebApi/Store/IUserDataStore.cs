@@ -10,7 +10,7 @@ namespace WebApi.Store
         Task Connect(string connectionInfo);
         Task Delete(string id);
         Task<IEnumerable<T>> Get<T>();
-        Task<T> Get<T>(string id);
+        Task<T> Get<T>(string id) where T : new();
         Task<string> Insert<T>(T document);
         Task<IEnumerable<T>> Query<T>(Expression<Func<T, bool>> predicate);
         Task Update<T>(string id, T document);

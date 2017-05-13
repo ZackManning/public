@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace WebApi.Models
 {
     public class User
     {
         private string id;
+        [JsonProperty(PropertyName = "id")]
         public string Id
         {
             get

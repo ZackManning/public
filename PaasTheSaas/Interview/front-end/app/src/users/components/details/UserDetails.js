@@ -5,6 +5,6 @@ export default {
   config : {
     bindings         : {  selected: '<' },
     templateUrl      : 'src/users/components/details/UserDetails.html',
-    controller       : [ '$log', '$scope', 'UsersDataService', UserDetailsController ]
+    controller       : [ '$log', '$scope', 'UsersDataService', '$mdDialog', UserDetailsController ]
   }
 };

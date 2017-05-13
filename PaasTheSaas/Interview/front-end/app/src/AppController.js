@@ -16,9 +16,11 @@ function AppController(UsersDataService, $mdSidenav, $scope, $mdDialog) {
 
   UsersDataService
     .loadAllUsers()
-    .then(function (users) {
-      self.users = [].concat(users);
-      setSelectedUser(users[0]);
+    .then(function (response) {
+      self.users = [].concat(response.data);
+      if (self.users.length > 0) {
+        setSelectedUser(self.users[0]);
+      }
     });
 
   // *********************************

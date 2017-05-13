@@ -50,16 +50,16 @@ namespace WebApi.Store
             return await Query<T>(null);
         }
 
-        public async Task<T> Get<T>(string id)
+        public async Task<T> Get<T>(string id) where T : new()
         {
-            var response = await client.ReadDocumentAsync(UriFactory.CreateDocumentUri(databaseID, collectionID, id));
-            if (response == null)
+            var doc = await client.ReadDocumentAsync<T>(UriFactory.CreateDocumentUri(databaseID, collectionID, id));
+            if (doc == null)
             {
                 return default(T);
             }
             else
             {
-                return (T)(dynamic)response;
+                return doc;
             }
         }
 
@@ -71,11 +71,19 @@ namespace WebApi.Store
 
         public async Task<IEnumerable<T>> Query<T>(Expression<Func<T, bool>> predicate)
         {
-            IDocumentQuery<T> query = client.CreateDocumentQuery<T>(
+            var queryable = client.CreateDocumentQuery<T>(
                 UriFactory.CreateDocumentCollectionUri(databaseID, collectionID),
-                new FeedOptions() { MaxItemCount = -1 })
-                .Where(predicate)
-                .AsDocumentQuery();
+                new FeedOptions() { MaxItemCount = -1 });
+            IDocumentQuery<T> query;
+            if (predicate == null)
+            {
+                query = queryable.AsDocumentQuery();
+            }
+            else
+            {
+                query = queryable.Where(predicate).AsDocumentQuery();
+            }
+
             var results = new List<T>();
             while (query.HasMoreResults)
             {

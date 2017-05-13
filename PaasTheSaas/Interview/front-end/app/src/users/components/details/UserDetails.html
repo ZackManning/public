@@ -10,7 +10,7 @@
 
         <md-input-container class="md-block" flex=40>
           <label>GitHub Handle</label>
-          <input ng-model="$ctrl.currentUser.githubHandle" disabled>
+          <input ng-model="$ctrl.currentUser.githubHandle" ng-change="$ctrl.onUserInfoChanged()">
         </md-input-container>
       </md-list-item>
       <md-list-item>
@@ -45,7 +45,7 @@
       </md-list-item>
     </div>
 
-    <div ng-show="$ctrl.selected.pendingChanges">
+    <div ng-show="$ctrl.selected.pendingChanges && !$ctrl.saving">
       <md-button class="md-raised md-primary" ng-click="$ctrl.save()">
         Save
       </md-button>
@@ -53,6 +53,7 @@
         Undo Changes
       </md-button>
     </div>
+    <md-progress-circular ng-show="$ctrl.saving" md-mode="indeterminate" md-diameter="40"></md-progress-circular>
 
   </form>
 

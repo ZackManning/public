@@ -5,10 +5,13 @@ class UserDetailsController {
    *
    * @param $log
    */
-  constructor($log, $scope, UsersDataService) {
+  constructor($log, $scope, UsersDataService, $mdDialog) {
     this.$log = $log;
     this.UsersDataService = UsersDataService;
+    this.$mdDialog = $mdDialog;
+
     this.currentUser = angular.copy(this.selected);
+    this.saving = false;
 
     $scope.$watch(() => this.selected, function (newValue, oldValue) {
       $scope.$ctrl.currentUser = angular.copy(newValue);
@@ -21,11 +24,22 @@ class UserDetailsController {
 
   save() {
     var self = this;
+    self.saving = true;
     self.UsersDataService.saveUser(self.currentUser)
-      .then(function(user) {
+      .then(function (user) {
         angular.copy(self.currentUser, self.selected);
-        console.log(self.selected);
+      }, function () {
+        self.$mdDialog.show(
+          self.$mdDialog.alert()
+            .title('Error Saving')
+            .textContent('Failed to save user.')
+            .ariaLabel('Error')
+            .ok('OK')
+        );
       })
+      .finally(function () {
+        self.saving = false;
+      });
   }
 
   undoChanges() {
