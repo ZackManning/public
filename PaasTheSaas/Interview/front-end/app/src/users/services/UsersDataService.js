@@ -6,7 +6,7 @@
  * @returns {{loadAll: Function}}
  * @constructor
  */
-function UsersDataService($http) {
+function UsersDataService($http, $q) {
   var baseApiUrl = 'http://localhost:50536/api/Users/';
 
   function loadAllUsers() {
@@ -14,7 +14,23 @@ function UsersDataService($http) {
   }
 
   function saveUser(user) {
-    return $http.put(baseApiUrl + user.id, user);
+    if (user.id) {
+      // Existing user so update
+      return $http.put(baseApiUrl + user.id, user);
+    }
+    else {
+      // New user so create
+      return $http.post(baseApiUrl, user);
+    }
+  }
+
+  function deleteUser(user) {
+    if(user.id) {
+      return $http.delete(user.id);
+    }
+    else {
+      return $q.when(null);
+    }
   }
 
   return {
@@ -23,5 +39,5 @@ function UsersDataService($http) {
   };
 }
 
-export default ['$http', UsersDataService];
+export default ['$http', '$q', UsersDataService];
 

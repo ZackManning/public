@@ -43,8 +43,14 @@ class UserDetailsController {
   }
 
   undoChanges() {
-    this.selected.pendingChanges = false;
-    angular.copy(this.selected, this.currentUser);
+    if (this.selected.id) {
+      this.selected.pendingChanges = false;
+      angular.copy(this.selected, this.currentUser);
+    }
+    else {
+      // This is a new user so just get rid of it.
+      this.deleteUser({ user: this.selected });
+    }
   }
 
 }

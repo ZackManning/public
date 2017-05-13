@@ -66,7 +66,7 @@ namespace WebApi.Store
         public async Task<string> Insert<T>(T document)
         {
             var response = await client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(databaseID, collectionID), document);
-            return (response as dynamic).id;
+            return (response.Resource as dynamic).id;
         }
 
         public async Task<IEnumerable<T>> Query<T>(Expression<Func<T, bool>> predicate)
