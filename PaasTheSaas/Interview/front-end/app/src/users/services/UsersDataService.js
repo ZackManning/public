@@ -13,20 +13,17 @@ function UsersDataService($http, $q) {
     return $http.get(baseApiUrl);
   }
 
-  function saveUser(user) {
-    if (user.id) {
-      // Existing user so update
-      return $http.put(baseApiUrl + user.id, user);
-    }
-    else {
-      // New user so create
-      return $http.post(baseApiUrl, user);
-    }
+  function updateUser(user) {
+    return $http.put(baseApiUrl + user.id, user);
+  }
+
+  function createUser(user) {
+    return $http.post(baseApiUrl, user);
   }
 
   function deleteUser(user) {
-    if(user.id) {
-      return $http.delete(user.id);
+    if (user.id) {
+      return $http.delete(baseApiUrl + user.id);
     }
     else {
       return $q.when(null);
@@ -35,7 +32,9 @@ function UsersDataService($http, $q) {
 
   return {
     loadAllUsers: loadAllUsers,
-    saveUser: saveUser
+    updateUser: updateUser,
+    createUser: createUser,
+    deleteUser: deleteUser
   };
 }
 

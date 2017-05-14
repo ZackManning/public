@@ -10,6 +10,18 @@ html, body {
   padding: 0px;
 }
 
+fieldset {
+  border: 0;
+}
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
 /* Toolbar area */
 
 .menu {

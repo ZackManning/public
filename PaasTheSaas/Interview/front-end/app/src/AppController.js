@@ -11,7 +11,7 @@ function AppController(UsersDataService, $mdSidenav, $scope, $mdDialog) {
   self.users = null;
   self.selectUser = selectUser;
   self.addUser = addUser;
-  self.deleteUser = deleteUser;
+  self.removeUser = removeUser;
   self.toggleList = toggleUsersList;
 
   // Load all registered users
@@ -51,20 +51,7 @@ function AppController(UsersDataService, $mdSidenav, $scope, $mdDialog) {
     selectUser(newUser);
   }
 
-  function deleteUser(user) {
-    console.log(user);
-    if (user.id) {
-      self.UsersDataService.deleteUser(user)
-        .then(function () {
-          removeUserFromArray(user);
-        });
-    }
-    else {
-      removeUserFromArray(user);
-    }
-  }
-
-  function removeUserFromArray(user) {
+  function removeUser(user) {
     if (self.selected === user) {
       self.selected.pendingChanges = false;
       selectUser(null);
@@ -85,7 +72,7 @@ function AppController(UsersDataService, $mdSidenav, $scope, $mdDialog) {
 
     if (self.selected && self.selected.pendingChanges) {
       var confirm = $mdDialog.confirm()
-        .title(`User "${self.selected.name || self.selected.githubHandle || ""}" has changed`)
+        .title(`User '${self.selected.name || self.selected.githubHandle || ""}' has changed`)
         .textContent('Are you sure you want to switch to another user?')
         .ariaLabel('User changed')
         .ok('Discard changes')
@@ -96,7 +83,7 @@ function AppController(UsersDataService, $mdSidenav, $scope, $mdDialog) {
         }
         else {
           // This is a new user so just get rid of it.
-          removeUserFromArray(self.selected);
+          removeUser(self.selected);
         }
         setSelectedUser(user);
       }, function () {
