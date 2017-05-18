@@ -29,12 +29,14 @@
     <!-- Container #3 -->
     <md-sidenav class="md-whiteframe-4dp" md-is-locked-open="$mdMedia('gt-sm')"
                 md-component-id="left" ng-click="app.toggleList()">
+      <md-button class="md-fab md-fab-bottom-right" ng-show="app.users" ng-click="app.addUser()" aria-label="Add User">
+        <md-icon md-svg-icon="add"></md-icon>
+      </md-button>
       <!-- Custom UsersList component -->
       <users-list
           users="app.users"
           selected="app.selected"
-          on-selected="app.selectUser(user)"
-          add-user="app.addUser()">
+          on-selected="app.selectUser(user)">
       </users-list>
     </md-sidenav>
 

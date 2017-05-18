@@ -1,10 +1,8 @@
-<md-list>
-  <md-list-item ng-repeat="user in $ctrl.users | orderBy: ['name', 'githubHandle']" ng-click="$ctrl.showDetails({user:user})">
-    <img ng-src="https://avatars.githubusercontent.com/{{user.githubHandle || 'github'}}" class="md-avatar" />
-    <span ng-class="{'selected' : user === $ctrl.selected }">{{user.name || user.githubHandle}}</span>
-  </md-list-item>
-</md-list>
-
-<md-button class="md-fab md-fab-bottom-right" ng-show="$ctrl.users" ng-click="$ctrl.addUser()" aria-label="Add User">
-  <md-icon md-svg-icon="add"></md-icon>
-</md-button>
+<md-content class="scrollable-nav-content">
+  <md-list>
+    <md-list-item ng-repeat="user in $ctrl.users | orderBy: ['name', 'githubHandle']" ng-click="$ctrl.showDetails({user:user})">
+      <img ng-src="https://avatars.githubusercontent.com/{{user.githubHandle || 'github'}}" class="md-avatar" />
+      <span ng-class="{'selected' : user === $ctrl.selected }">{{user.name || user.githubHandle}}</span>
+    </md-list-item>
+  </md-list>
+</md-content>
