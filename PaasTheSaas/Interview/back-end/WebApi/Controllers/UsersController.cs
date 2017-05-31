@@ -39,7 +39,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> Get()
         {
             var users = await UsersDataStore.Get<User>();
-            if (users == null || users.Count() == 0)
+            if (users == null)
             {
                 return NotFound();
             }
