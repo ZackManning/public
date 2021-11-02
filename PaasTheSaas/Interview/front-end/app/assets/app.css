@@ -10,6 +10,18 @@ html, body {
   padding: 0px;
 }
 
+fieldset {
+  border: 0;
+}
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
 /* Toolbar area */
 
 .menu {
@@ -46,4 +58,13 @@ md-button.menuBtn > md-icon {
 
 md-list-item img.input-avatar {
   margin-bottom: 40px;
+}
+
+.scrollable-nav-content {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  right: 0px;
+  width: 100%;
+  overflow: scroll;
 }

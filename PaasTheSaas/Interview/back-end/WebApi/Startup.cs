@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using WebApi.Store;
 using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.AspNetCore.Mvc.Cors.Internal;
 
 namespace WebApi
 {
@@ -27,6 +28,14 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", builder =>
+                {
+                    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                });
+            });
+
             // Add framework services.
             services.AddMvc();
 
@@ -37,7 +46,7 @@ namespace WebApi
                     {
                         Version = "v1",
                         Title = "Users Web API",
-                        Description = "A user ASP.NET Core Web API",
+                        Description = "API to load user information",
                         TermsOfService = "None"
                     });
 
@@ -47,10 +56,12 @@ namespace WebApi
             );
 
             // Register a transient service for DI
-            services.AddTransient<IDataStore>(
+            services.AddTransient<IUserDataStore>(
                 userProvider =>
                 {
-                    return new YourDataStore();
+                    var dbSection = Configuration.GetSection("Database");
+                    return new UserDocumentStore(dbSection.GetValue<string>("endpoint"), dbSection.GetValue<string>("authKey"),
+                        dbSection.GetValue<string>("ID"), dbSection.GetValue<string>("Collection"));
                 }
             );
         }
@@ -67,6 +78,8 @@ namespace WebApi
             }
 
             app.UseStaticFiles();
+
+            app.UseCors("AllowAll");
 
             app.UseMvc();
             app.UseSwagger();

@@ -6,38 +6,37 @@
  * @returns {{loadAll: Function}}
  * @constructor
  */
-function UsersDataService($q) {
-  var users = [
-    {
-      name: 'Juan Jaspe',
-      githubHandle: 'jjaspenextech',
-      address: '5550 Executive Dr',
-      city: 'Tampa',
-      state: 'FL',
-      zip: '33609'
-    },
-    {
-      name: 'Brandon Ripley',
-      githubHandle: 'bripley-nxtech'
-    },
-    {
-      name: 'Brad Savon',
-      githubHandle: 'bradsavon'
-    },
-    {
-      name: 'Zack Manning',
-      githubHandle: 'ZackManning'
-    }
-  ];
+function UsersDataService($http, $q) {
+  var baseApiUrl = 'http://localhost:50536/api/Users/';
 
-  // Promise-based API
-  return {
-    loadAllUsers: function() {
-      // Simulate async nature of real remote calls
-      return $q.when(users);
+  function loadAllUsers() {
+    return $http.get(baseApiUrl);
+  }
+
+  function updateUser(user) {
+    return $http.put(baseApiUrl + user.id, user);
+  }
+
+  function createUser(user) {
+    return $http.post(baseApiUrl, user);
+  }
+
+  function deleteUser(user) {
+    if (user.id) {
+      return $http.delete(baseApiUrl + user.id);
     }
+    else {
+      return $q.when(null);
+    }
+  }
+
+  return {
+    loadAllUsers: loadAllUsers,
+    updateUser: updateUser,
+    createUser: createUser,
+    deleteUser: deleteUser
   };
 }
 
-export default ['$q', UsersDataService];
+export default ['$http', '$q', UsersDataService];
 

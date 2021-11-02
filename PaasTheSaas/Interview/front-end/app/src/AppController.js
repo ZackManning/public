@@ -4,22 +4,26 @@
  * @param $mdSidenav
  * @constructor
  */
-function AppController(UsersDataService, $mdSidenav, $scope) {
+function AppController(UsersDataService, $mdSidenav, $scope, $mdDialog) {
   var self = this;
 
-  self.selected     = null;
-  self.users        = [ ];
-  self.selectUser   = selectUser;
-  self.toggleList   = toggleUsersList;
+  self.selected = null;
+  self.users = null;
+  self.selectUser = selectUser;
+  self.addUser = addUser;
+  self.removeUser = removeUser;
+  self.toggleList = toggleUsersList;
 
   // Load all registered users
 
   UsersDataService
-        .loadAllUsers()
-        .then( function( users ) {
-          self.users    = [].concat(users);
-          self.selected = users[0];
-        });
+    .loadAllUsers()
+    .then(function (response) {
+      self.users = [].concat(response.data);
+      if (self.users.length > 0) {
+        setSelectedUser(self.users[0]);
+      }
+    });
 
   // *********************************
   // Internal methods
@@ -32,14 +36,64 @@ function AppController(UsersDataService, $mdSidenav, $scope) {
     $mdSidenav('left').toggle();
   }
 
+  function setSelectedUser(user) {
+    self.selected = user;
+  }
+
+  function addUser() {
+    var newUser = {
+      id: null,
+      githubHandle: null,
+      pendingChanges: true
+    };
+
+    self.users.push(newUser);
+    selectUser(newUser);
+  }
+
+  function removeUser(user) {
+    if (self.selected === user) {
+      self.selected.pendingChanges = false;
+      selectUser(null);
+    }
+    self.users = self.users.filter(u => u !== user);
+  }
+
   /**
    * Select the current avatars
    * @param menuId
    */
-  function selectUser ( user ) {
-    console.log($scope);
-    self.selected = angular.isNumber(user) ? $scope.users[user] : user;
+  function selectUser(user) {
+    if (user === self.selected) {
+      return;
+    }
+
+    user = angular.isNumber(user) ? $scope.users[user] : user;
+
+    if (self.selected && self.selected.pendingChanges) {
+      var confirm = $mdDialog.confirm()
+        .title(`User '${self.selected.name || self.selected.githubHandle || ""}' has changed`)
+        .textContent('Are you sure you want to switch to another user?')
+        .ariaLabel('User changed')
+        .ok('Discard changes')
+        .cancel('Go back');
+      $mdDialog.show(confirm).then(function () {
+        if (self.selected.id) {
+          self.selected.pendingChanges = false;
+        }
+        else {
+          // This is a new user so just get rid of it.
+          removeUser(self.selected);
+        }
+        setSelectedUser(user);
+      }, function () {
+        // Do nothing
+      });
+    }
+    else {
+      setSelectedUser(user);
+    }
   }
 }
 
-export default [ 'UsersDataService', '$mdSidenav', '$scope', AppController ];
+export default ['UsersDataService', '$mdSidenav', '$scope', '$mdDialog', AppController];

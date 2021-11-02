@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebApi.Store;
 using WebApi.Models;
 using System.Net;
+using System.Linq;
 
 namespace WebApi.Controllers
 {
@@ -14,13 +15,13 @@ namespace WebApi.Controllers
     [Route("api/[controller]")]
     public class UsersController : Controller
     {
-        private IDataStore UsersDataStore;
+        private IUserDataStore UsersDataStore;
 
         /// <summary>
         /// Construct Controller
         /// </summary>
         /// <param name="dataStore">Injected Data Store</param>
-        public UsersController(IDataStore dataStore)
+        public UsersController(IUserDataStore dataStore)
         {
             UsersDataStore = dataStore;
         }
@@ -37,11 +38,15 @@ namespace WebApi.Controllers
         [ProducesResponseType(typeof(BadRequestResult), (int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> Get()
         {
-            // Implement
-
-            // Remove below when implemented
-            await Task.Delay(1);
-            return new StatusCodeResult((int)HttpStatusCode.MethodNotAllowed);
+            var users = await UsersDataStore.Get<User>();
+            if (users == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(users);
+            }
         }
 
         /// <summary>
@@ -57,17 +62,26 @@ namespace WebApi.Controllers
         /// <response code="200">Returns the user</response>
         /// <response code="400">If there is no id</response>
         /// <response code="404">No Content</response>
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetUser")]
         [ProducesResponseType(typeof(User), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadRequestResult), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(NotFoundResult), (int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> Get([FromRoute] string id)
         {
-            // Implement
-
-            // Remove below when implemented
-            await Task.Delay(1);
-            return new StatusCodeResult((int)HttpStatusCode.MethodNotAllowed);
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest();
+            }
+            
+            var user = await UsersDataStore.Get<User>(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(user);
+            }
         }
         #endregion GET
 
@@ -94,13 +108,16 @@ namespace WebApi.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(User), (int)HttpStatusCode.Created)]
         [ProducesResponseType(typeof(BadRequestResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Post([FromBody]User user)
+        public async Task<IActionResult> Post([FromBody] User user)
         {
-            // Implement
+            if (user == null)
+            {
+                return BadRequest();
+            }
 
-            // Remove below when implemented
-            await Task.Delay(1);
-            return new StatusCodeResult((int)HttpStatusCode.MethodNotAllowed);
+            var newUserID = await UsersDataStore.Insert(user);
+
+            return CreatedAtRoute("GetUser", new { id = newUserID }, user);
         }
         #endregion POST
 
@@ -117,14 +134,23 @@ namespace WebApi.Controllers
         [ProducesResponseType(typeof(NoContentResult), (int)HttpStatusCode.NoContent)]
         [ProducesResponseType(typeof(BadRequestResult), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(NotFoundResult), (int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> Put([FromRoute] string id, [FromBody]User user)
+        public async Task<IActionResult> Put([FromRoute] string id, [FromBody] User user)
         {
-            // Implement
+            if (InvalidUpdateModelState(id, user))
+            {
+                return BadRequest();
+            }
 
-            // Remove below when implemented
-            await Task.Delay(1);
-            return new StatusCodeResult((int)HttpStatusCode.MethodNotAllowed);
+            if (await UsersDataStore.Get<User>(id) == null)
+            {
+                return NotFound();
+            }
+
+            await UsersDataStore.Update(id, user);
+
+            return NoContent();
         }
+        #endregion PUT
 
         #region Utilities
         private bool InvalidUpdateModelState(string id, User user)
@@ -132,7 +158,7 @@ namespace WebApi.Controllers
             return string.IsNullOrWhiteSpace(id) || user == null || user.Id != id;
         }
         #endregion Utilities
-        #endregion PUT
+
 
         #region DELETE
         /// <summary>
@@ -148,11 +174,19 @@ namespace WebApi.Controllers
         [ProducesResponseType(typeof(NotFoundResult), (int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> Delete([FromRoute] string id)
         {
-            // Implement
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest();
+            }
 
-            // Remove below when implemented
-            await Task.Delay(1);
-            return new StatusCodeResult((int)HttpStatusCode.MethodNotAllowed);
+            if (await UsersDataStore.Get<User>(id) == null)
+            {
+                return NotFound();
+            }
+
+            await UsersDataStore.Delete(id);
+
+            return NoContent();
         }
         #endregion DELETE
     }

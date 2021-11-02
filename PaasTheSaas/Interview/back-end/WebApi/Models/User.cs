@@ -1,5 +1,4 @@
-﻿
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 
 namespace WebApi.Models
@@ -25,8 +24,12 @@ namespace WebApi.Models
                 id = value;
             }
         }
-
+        
         public string Name { get; set; }
         public string GithubHandle { get; set; }
+        public string Address { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Zip { get; set; }
     }
 }
